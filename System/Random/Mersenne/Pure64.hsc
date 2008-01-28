@@ -1,4 +1,4 @@
-{-# LANGUAGE EmptyDataDecls, CPP, ForeignFunctionInterface #-}
+{-# LANGUAGE CPP, ForeignFunctionInterface #-}
 --------------------------------------------------------------------
 -- |
 -- Module     : System.Random.Mersenne.Pure64
@@ -6,7 +6,7 @@
 -- License    : BSD3
 -- Maintainer : Don Stewart <dons@galois.com>
 -- Stability  : experimental
--- Portability: CPP, FFI, BangPattern, EmptyDataDecls
+-- Portability: CPP, FFI
 -- Tested with: GHC 6.8.2
 --
 -- A purely functional binding 64 bit binding to the classic mersenne
@@ -45,7 +45,7 @@ module System.Random.Mersenne.Pure64 (
 
 import System.Random.Mersenne.Pure64.Base
 
-#if __GLASGOW_HASKELL__ >= 605 && !defined(SLOW_FOREIGN_PTR)
+#if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 605
 import GHC.ForeignPtr           (mallocPlainForeignPtrBytes)
 #else
 import Foreign.ForeignPtr       (mallocForeignPtrBytes)
