@@ -1,1 +1,5 @@
 -fvia-C seems to break things!
+Check sequences are repeatable
+check behaviour on 32 bits
+profile/benchmark
+tests driver

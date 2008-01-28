@@ -1,12 +1,19 @@
-name:            mt19937-random
+name:            mersenne-random-pure64
 version:         0.1
 homepage:        http://code.haskell.org/~dons/code/mt19937-random
-synopsis:        Generate high quality pseudorandom numbers using a Mersenne Twister
+synopsis:        Generate high quality pseudorandom numbers purely using a Mersenne Twister
 description:
     The Mersenne twister is a pseudorandom number generator developed by
     Makoto Matsumoto and Takuji Nishimura that is based on a matrix linear
     recurrence over a finite binary field. It provides for fast generation
     of very high quality pseudorandom numbers
+    .
+    This library provides a purely functional binding to the 64 bit
+    classic mersenne twister, along with instances of RandomGen, so the
+    generator can be used with System.Random. The generator should
+    typically be a few times faster than the default StdGen (but much
+    slower than the impure 'mersenne-random' based on SIMD and
+    destructive updates.
     .
 category:        Math, System
 license:         BSD3
@@ -24,13 +31,14 @@ flag small_base
   default:     False
 
 library
-    exposed-modules: System.Random.Mersenne.Pure
-    extensions:      CPP, ForeignFunctionInterface, BangPatterns
+    exposed-modules: System.Random.Mersenne.Pure64
+                     System.Random.Mersenne.Pure64.Base
+    extensions:      CPP, ForeignFunctionInterface
 
     if flag(small_base)
         build-depends: base  < 3
     else
-        build-depends: base >= 3, old-time
+        build-depends: base >= 3, old-time, random
 
     cc-options:
         -O3 -finline-functions -fomit-frame-pointer
