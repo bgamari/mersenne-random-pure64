@@ -6,14 +6,17 @@ description:
     The Mersenne twister is a pseudorandom number generator developed by
     Makoto Matsumoto and Takuji Nishimura that is based on a matrix linear
     recurrence over a finite binary field. It provides for fast generation
-    of very high quality pseudorandom numbers
+    of very high quality pseudorandom numbers. The source for the C code
+    can be found here:
+    .
+    <http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt64.html>
     .
     This library provides a purely functional binding to the 64 bit
     classic mersenne twister, along with instances of RandomGen, so the
     generator can be used with System.Random. The generator should
     typically be a few times faster than the default StdGen (but much
-    slower than the impure 'mersenne-random' based on SIMD and
-    destructive updates.
+    slower than the impure 'mersenne-random' library based on SIMD
+    instructions and destructive state updates.
     .
 category:        Math, System
 license:         BSD3
