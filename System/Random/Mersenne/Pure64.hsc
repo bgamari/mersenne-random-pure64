@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP, ForeignFunctionInterface #-}
+{-# LANGUAGE BangPatterns, CPP, ForeignFunctionInterface #-}
 --------------------------------------------------------------------
 -- |
 -- Module     : System.Random.Mersenne.Pure64
@@ -146,19 +146,23 @@ init_genrand64 :: UInt64 -> PureMT
 init_genrand64 seed = unsafePerformIO $ do
     fp <- mallocFastBytes sizeof_MTState
     withForeignPtr fp $ \p -> c_init_genrand64 p seed -- fill it
-    return (PureMT fp)
+    return $ PureMT fp
 
 genrand64_int64 :: PureMT -> (UInt64, PureMT)
 genrand64_int64 o   = unsafePerformIO $ do
     PureMT n <- copyPureMT o
     v        <- withForeignPtr n $ c_genrand64_int64
-    return (v,PureMT n)
+    n `seq` v `seq`
+        return (v,PureMT n)
+{-# INLINE genrand64_int64 #-}
 
 genrand64_real2 :: PureMT -> (CDouble, PureMT)
 genrand64_real2 o   = unsafePerformIO $ do
     PureMT n <- copyPureMT o
     v        <- withForeignPtr n $ c_genrand64_real2
-    return (v,PureMT n)
+    n `seq` v `seq`
+        return (v,PureMT n)
+{-# INLINE genrand64_real2 #-}
 
 -- ---------------------------------------------------------------------
 -- Memory management
