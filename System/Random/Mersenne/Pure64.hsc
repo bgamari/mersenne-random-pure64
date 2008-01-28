@@ -1,4 +1,4 @@
-{-# LANGUAGE BangPatterns, CPP, ForeignFunctionInterface #-}
+{-# LANGUAGE CPP, ForeignFunctionInterface #-}
 --------------------------------------------------------------------
 -- |
 -- Module     : System.Random.Mersenne.Pure64
