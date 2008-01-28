@@ -27,7 +27,6 @@ maintainer:      Don Stewart <dons@galois.com>
 cabal-version: >= 1.2.0
 build-type:      Configure
 tested-with:     GHC ==6.8.2
-build-type:      Configure
 
 flag small_base
   description: Build with new smaller base library
