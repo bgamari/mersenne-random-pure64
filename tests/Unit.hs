@@ -12,7 +12,8 @@ import Text.Printf
 import qualified System.Random as Old
 import qualified System.Random.Mersenne as Unsafe
 
-import System.Random.Mersenne.Pure
+import System.Random.Mersenne.Pure64
+import System.Random.Mersenne.Pure64.Base
 import Control.Concurrent
 import Control.Concurrent.MVar
 
@@ -30,7 +31,7 @@ seed = 7
 main = do
 
     c_init_genrand64_unsafe seed
-    let g = init_genrand64 seed
+    let g = pureMT (fromIntegral seed)
 
     ------------------------------------------------------------------------
     -- calibrate
@@ -38,8 +39,8 @@ main = do
     putStr "Callibrating ... " >> hFlush stdout
 
     tid <- forkIO $ do
-        let go !i g = do
-                let (!_,g') = genrand64_int64 g
+        let go !i !g = do
+                let (!_,!g') = randomWord64 g
                 x <- swapMVar s i
                 x `seq` go (i+1) g'
         go 0 g
@@ -66,10 +67,10 @@ equivalent !g !n | n > 0 = do
     i'      <- c_genrand64_int64_unsafe
     d'      <- c_genrand64_real2_unsafe
 
-    let (i,g')  = genrand64_int64 g
-        (d,g'') = genrand64_real2 g'
+    let (i,g')  = randomWord64 g
+        (d,g'') = randomDouble g'
 
-    if i == i' && d == d'
+    if i == fromIntegral i' && d == realToFrac d'
         then do when (n `rem` 500000 == 0) $ putChar '.' >> hFlush stdout
                 equivalent g'' (n-1)
 
@@ -98,12 +99,12 @@ speed lim = do
 
  time $ do
     putStrLn $ "System.Random.Mersenne.Pure"
-    let g = init_genrand64 5
+    let g = pureMT 5
     let go :: PureMT -> Int -> Int -> Int
         go !g !n !acc
             | n >= lim = acc
             | otherwise     =
-                    let (a',g') = genrand64_int64 g
+                    let (a',g') = randomWord64 g
                         a = fromIntegral a'
                     in go g' (n+1) (if a > acc then a else acc)
     print (go g 0 0)
