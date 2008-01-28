@@ -15,6 +15,9 @@
 -- This generator is however, many times faster than System.Random,
 -- and yields high quality randoms with a long period.
 --
+-- This generator may be used with System.Random, however, that is
+-- likely to be slower than using it directly.
+--
 module System.Random.Mersenne.Pure64 (
 
     -- * The random number generator

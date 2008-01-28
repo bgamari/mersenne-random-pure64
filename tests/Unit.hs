@@ -98,6 +98,17 @@ speed lim = do
     print (go g 0 0)
 
  time $ do
+    putStrLn $ "System.Random with our generator"
+    let g = pureMT 5
+    let go :: PureMT -> Int -> Int -> Int
+        go !g !n !acc
+            | n >= lim = acc
+            | otherwise     =
+                    let (a,g') = Old.random g
+                    in go g' (n+1) (if a > acc then a else acc)
+    print (go g 0 0)
+
+ time $ do
     putStrLn $ "System.Random.Mersenne.Pure"
     let g = pureMT 5
     let go :: PureMT -> Int -> Int -> Int
