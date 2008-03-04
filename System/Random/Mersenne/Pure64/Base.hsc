@@ -1,7 +1,7 @@
 {-# LANGUAGE EmptyDataDecls, CPP, ForeignFunctionInterface #-}
 --------------------------------------------------------------------
 -- |
--- Module     : System.Random.Mersenne.Pure64
+-- Module     : System.Random.Mersenne.Pure64.Base
 -- Copyright  : Copyright (c) 2008, Don Stewart <dons@galois.com>
 -- License    : BSD3
 -- Maintainer : Don Stewart <dons@galois.com>
