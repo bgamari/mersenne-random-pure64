@@ -51,7 +51,9 @@ library
 
     c-sources:        cbits/mt19937-64.c
                       cbits/mt19937-64-unsafe.c
+                      cbits/mt19937-64-block.c
     include-dirs:     include
     includes:
     install-includes: mt19937-64.h
                       mt19937-64-unsafe.h
+                      mt19937-64-block.h

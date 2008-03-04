@@ -17,6 +17,7 @@
 --
 module System.Random.Mersenne.Pure64.Base where
 
+#include "mt19937-64-block.h"
 #include "mt19937-64.h"
 #include "mt19937-64-unsafe.h"
 
@@ -41,6 +42,25 @@ foreign import ccall unsafe "genrand64_real2"
 
 sizeof_MTState :: Int
 sizeof_MTState = (#const (sizeof (struct mt_state_t))) -- 2504 bytes
+
+------------------------------------------------------------------------
+-- block based version:
+foreign import ccall unsafe "mix_bits"
+    c_mix_word64 :: Word64 -> Word64
+
+foreign import ccall unsafe "seed_genrand64_block"
+    c_seed_genrand64_block :: Ptr a -> Word64 -> IO ()
+
+foreign import ccall unsafe "next_genrand64_block"
+    c_next_genrand64_block :: Ptr a -> Ptr a -> IO ()
+
+-- | length of an MT block
+blockLen :: Int
+blockLen = (# const NN )
+
+-- | size of an MT block, in bytes
+blockSize :: Int
+blockSize = (# const sizeof(mt_block_struct) )
 
 ------------------------------------------------------------------------
 -- model: (for testing purposes)
