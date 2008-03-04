@@ -42,10 +42,6 @@ module System.Random.Mersenne.Pure64 (
 
 ------------------------------------------------------------------------
 
-#include "mt19937-64.h"
-
-------------------------------------------------------------------------
-
 import System.Random.Mersenne.Pure64.Base
 
 #if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 605
@@ -138,9 +134,6 @@ newtype PureMT  = PureMT (ForeignPtr MTState)
 
 instance Show PureMT where
     show _ = show "<PureMT>"
-
-sizeof_MTState :: Int
-sizeof_MTState = (#const (sizeof (struct mt_state_t))) -- 2504 bytes
 
 ------------------------------------------------------------------------
 -- Low level interface

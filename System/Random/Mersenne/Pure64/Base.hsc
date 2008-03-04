@@ -39,6 +39,9 @@ foreign import ccall unsafe "genrand64_int64"
 foreign import ccall unsafe "genrand64_real2"
     c_genrand64_real2 :: Ptr MTState -> IO CDouble
 
+sizeof_MTState :: Int
+sizeof_MTState = (#const (sizeof (struct mt_state_t))) -- 2504 bytes
+
 ------------------------------------------------------------------------
 -- model: (for testing purposes)
 
