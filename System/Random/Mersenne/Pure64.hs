@@ -42,32 +42,16 @@ module System.Random.Mersenne.Pure64 (
 
 ------------------------------------------------------------------------
 
-import System.Random.Mersenne.Pure64.Base
-
-#if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 605
-import GHC.ForeignPtr           (mallocPlainForeignPtrBytes)
-#else
-import Foreign.ForeignPtr       (mallocForeignPtrBytes)
-#endif
-
-import Foreign.C.Types
-import Foreign
-
-import System.CPUTime	( getCPUTime )
-import System.Time
-import System.IO.Unsafe
-import Control.Monad
-
+import System.Random.Mersenne.Pure64.MTBlock
 import System.Random
-
 import Data.Word
 import Data.Int
+import System.Time
+import System.CPUTime
 
-------------------------------------------------------------------------
-
--- | Create a PureMT generator from a 'Word' seed.
+-- | Create a PureMT generator from a 'Word64' seed.
 pureMT :: Word64 -> PureMT
-pureMT = init_genrand64 . fromIntegral
+pureMT = mkPureMT . seedBlock . fromIntegral
 
 -- | Create a new PureMT generator, using the clocktime as the base for the seed.
 newPureMT :: IO PureMT
@@ -79,8 +63,8 @@ newPureMT = do
 ------------------------------------------------------------------------
 -- System.Random interface.
 
--- $instance 
--- 
+-- $instance
+--
 -- Being purely functional, the PureMT generator is an instance of
 -- RandomGen. However, it doesn't support 'split' yet.
 
@@ -95,97 +79,40 @@ instance RandomGen PureMT where
 -- generator and that 'Int'. The full 64 bits will be used on a 64 bit machine.
 randomInt :: PureMT -> (Int,PureMT)
 randomInt g = (fromIntegral i, g')
-        where (i,g') = genrand64_int64 g
+        where (i,g') = randomWord64 g
 
 -- | Yield a new 'Word' value from the generator, returning a new
--- generator and that 'Word'. 
+-- generator and that 'Word'.
 randomWord :: PureMT -> (Word,PureMT)
 randomWord g = (fromIntegral i, g')
-        where (i,g') = genrand64_int64 g
+        where (i,g') = randomWord64 g
 
 -- | Yield a new 'Int64' value from the generator, returning a new
--- generator and that 'Int64'. 
+-- generator and that 'Int64'.
 randomInt64 :: PureMT -> (Int64,PureMT)
 randomInt64 g = (fromIntegral i, g')
-        where (i,g') = genrand64_int64 g
-
--- | Yield a new 'Word64' value from the generator, returning a new
--- generator and that 'Word64'. 
-randomWord64 :: PureMT -> (Word64,PureMT)
-randomWord64 g = (fromIntegral i, g')
-        where (i,g') = genrand64_int64 g
+        where (i,g') = randomWord64 g
 
 -- | Efficiently yield a new 53-bit precise 'Double' value, and a new generator.
 randomDouble :: PureMT -> (Double,PureMT)
-randomDouble g = (realToFrac i, g')
-        where (i,g') = genrand64_real2 g
+randomDouble g = (fromIntegral (i `div` 2048) / 9007199254740992, g')
+        where (i,g') = randomWord64 g
 
-------------------------------------------------------------------------
--- We can have only one mersenne supply in a program.
-
--- You have to commit at initialisation time to call either
--- rand_gen32 or rand_gen64, and correspondingly, real2 or res53
--- for doubles.
---
+-- | Yield a new 'Word64' value from the generator, returning a new
+-- generator and that 'Word64'.
+randomWord64 :: PureMT -> (Word64,PureMT)
+randomWord64 (PureMT block i nxt) = (mixWord64 (block `lookupBlock` i), mt)
+  where
+    mt | i < blockLen-1 = PureMT block (i+1) nxt
+       | otherwise      = mkPureMT nxt
 
 -- | 'PureMT', a pure mersenne twister pseudo-random number generator
 --
-newtype PureMT  = PureMT (ForeignPtr MTState)
+data PureMT  = PureMT !MTBlock !Int MTBlock
 
 instance Show PureMT where
     show _ = show "<PureMT>"
 
-------------------------------------------------------------------------
--- Low level interface
-
-init_genrand64 :: UInt64 -> PureMT
-init_genrand64 seed = unsafePerformIO $ do
-    fp <- mallocFastBytes sizeof_MTState
-    withForeignPtr fp $ \p -> c_init_genrand64 p seed -- fill it
-    return $ PureMT fp
-
-genrand64_int64 :: PureMT -> (UInt64, PureMT)
-genrand64_int64 o   = unsafePerformIO $ do
-    PureMT n <- copyPureMT o
-    v        <- withForeignPtr n $ c_genrand64_int64
-    n `seq` v `seq`
-        return (v,PureMT n)
-{-# INLINE genrand64_int64 #-}
-
-genrand64_real2 :: PureMT -> (CDouble, PureMT)
-genrand64_real2 o   = unsafePerformIO $ do
-    PureMT n <- copyPureMT o
-    v        <- withForeignPtr n $ c_genrand64_real2
-    n `seq` v `seq`
-        return (v,PureMT n)
-{-# INLINE genrand64_real2 #-}
-
--- ---------------------------------------------------------------------
--- Memory management
-
---
--- | Wrapper of mallocForeignPtrBytes with faster implementation
--- Allocate pinned heap memory for the state.
---
-mallocFastBytes :: Int -> IO (ForeignPtr a)
-mallocFastBytes s = do
-#if __GLASGOW_HASKELL__ >= 605 && !defined(SLOW_FOREIGN_PTR)
-    mallocPlainForeignPtrBytes s
-#else
-    mallocForeignPtrBytes s
-#endif
-{-# INLINE mallocFastBytes #-}
-
---
--- Duplicate a random state, prior to permuting it.
---
-copyPureMT :: PureMT -> IO PureMT
-copyPureMT (PureMT oldfp) = do
-    newfp <- mallocFastBytes sizeof_MTState
-    withForeignPtr newfp $ \p ->
-        withForeignPtr oldfp $ \q ->
-            c_memcpy (castPtr p) (castPtr q) (fromIntegral sizeof_MTState)
-    return $! PureMT newfp
-{-# INLINE copyPureMT #-}
-
-
+-- create a new PureMT from an MTBlock
+mkPureMT :: MTBlock -> PureMT
+mkPureMT block = PureMT block 0 (nextBlock block)
