@@ -35,6 +35,7 @@ flag small_base
 library
     exposed-modules: System.Random.Mersenne.Pure64
                      System.Random.Mersenne.Pure64.Base
+                     System.Random.Mersenne.Pure64.MTBlock
     extensions:      CPP, ForeignFunctionInterface
 
     if flag(small_base)
