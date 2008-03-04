@@ -24,7 +24,7 @@ module System.Random.Mersenne.Pure64 (
     PureMT          -- abstract: RandomGen
 
     -- * Introduction
-    , pureMT        -- :: Word -> PureMT
+    , pureMT        -- :: Word64 -> PureMT
     , newPureMT     -- :: IO PureMT
 
     -- $instance
@@ -66,7 +66,7 @@ import Data.Int
 ------------------------------------------------------------------------
 
 -- | Create a PureMT generator from a 'Word' seed.
-pureMT :: Word -> PureMT
+pureMT :: Word64 -> PureMT
 pureMT = init_genrand64 . fromIntegral
 
 -- | Create a new PureMT generator, using the clocktime as the base for the seed.
