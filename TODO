@@ -1,4 +1,12 @@
 -fvia-C seems to break things!
+   The problem is that the prototypes of the imported functions don't get
+   propagated properly, leading to warnings like this:
+
+   /tmp/ghc7602_0/ghc7602_0.hc:718:0:
+        warning: implicit declaration of function 'mix_bits'
+
+   This is actually an error on 32 bit machines - the default return type
+   int is not large enough to hold the 64 bit result.
 Check sequences are repeatable
 check behaviour on 32 bits
 profile/benchmark

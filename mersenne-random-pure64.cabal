@@ -47,7 +47,7 @@ library
         -O3 -finline-functions -fomit-frame-pointer
         -fno-strict-aliasing --param max-inline-insns-single=1800
 
-    ghc-options:     -Wall -O2 -fvia-C -fexcess-precision
+    ghc-options:     -Wall -O2 -fexcess-precision
 
     c-sources:        cbits/mt19937-64.c
                       cbits/mt19937-64-unsafe.c
