@@ -1,6 +1,6 @@
 name:            mersenne-random-pure64
-version:         0.2
-homepage:        http://code.haskell.org/~dons/code/mt19937-random
+version:         0.2.0.1
+homepage:        http://code.haskell.org/~dons/code/mersenne-random-pure64/
 synopsis:        Generate high quality pseudorandom numbers purely using a Mersenne Twister
 description:
     The Mersenne twister is a pseudorandom number generator developed by
@@ -14,7 +14,7 @@ description:
     This library provides a purely functional binding to the 64 bit
     classic mersenne twister, along with instances of RandomGen, so the
     generator can be used with System.Random. The generator should
-    typically be a few times faster than the default StdGen (but much
+    typically be a few times faster than the default StdGen (but a tad
     slower than the impure 'mersenne-random' library based on SIMD
     instructions and destructive state updates.
     .
@@ -24,7 +24,7 @@ license-file:    LICENSE
 copyright:       (c) 2008. Don Stewart <dons@galois.com>
 author:          Don Stewart
 maintainer:      Don Stewart <dons@galois.com>
-cabal-version: >= 1.2.0
+cabal-version:   >= 1.2.0
 build-type:      Simple
 tested-with:     GHC ==6.8.2
 

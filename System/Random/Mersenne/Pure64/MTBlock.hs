@@ -2,7 +2,7 @@
 --------------------------------------------------------------------
 -- |
 -- Module     : System.Random.Mersenne.Pure64
--- Copyright  : Copyright (c) 2008, Bertram Felgenhauer <dons@galois.com>
+-- Copyright  : Copyright (c) 2008, Bertram Felgenhauer <int-e@gmx.de>
 -- License    : BSD3
 -- Maintainer : Don Stewart <dons@galois.com>
 -- Stability  : experimental
