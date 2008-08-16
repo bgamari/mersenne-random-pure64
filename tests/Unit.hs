@@ -124,6 +124,17 @@ speed lim = do
     print (go g 0 0)
 
  time $ do
+    putStrLn $ "System.Random.Mersenne.Pure generating Double"
+    let g = pureMT 5
+    let go :: PureMT -> Int -> Double -> Double
+        go !g !n !acc
+            | n >= lim = acc
+            | otherwise     =
+                    let (a, g') = randomDouble g
+                    in go g' (n+1) (if a > acc then a else acc)
+    print (go g 0 0)
+
+ time $ do
     putStrLn $ "System.Random.Mersenne.Pure (unique state)"
     c_init_genrand64_unsafe 5
     let go :: Int -> Int -> IO Int
