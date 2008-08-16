@@ -80,23 +80,27 @@ instance RandomGen PureMT where
 randomInt :: PureMT -> (Int,PureMT)
 randomInt g = (fromIntegral i, g')
         where (i,g') = randomWord64 g
+{-# INLINE randomInt #-}
 
 -- | Yield a new 'Word' value from the generator, returning a new
 -- generator and that 'Word'.
 randomWord :: PureMT -> (Word,PureMT)
 randomWord g = (fromIntegral i, g')
         where (i,g') = randomWord64 g
+{-# INLINE randomWord #-}
 
 -- | Yield a new 'Int64' value from the generator, returning a new
 -- generator and that 'Int64'.
 randomInt64 :: PureMT -> (Int64,PureMT)
 randomInt64 g = (fromIntegral i, g')
         where (i,g') = randomWord64 g
+{-# INLINE randomInt64 #-}
 
 -- | Efficiently yield a new 53-bit precise 'Double' value, and a new generator.
 randomDouble :: PureMT -> (Double,PureMT)
 randomDouble g = (fromIntegral (i `div` 2048) / 9007199254740992, g')
         where (i,g') = randomWord64 g
+{-# INLINE randomDouble #-}
 
 -- | Yield a new 'Word64' value from the generator, returning a new
 -- generator and that 'Word64'.
@@ -105,10 +109,11 @@ randomWord64 (PureMT block i nxt) = (mixWord64 (block `lookupBlock` i), mt)
   where
     mt | i < blockLen-1 = PureMT block (i+1) nxt
        | otherwise      = mkPureMT nxt
+{-# INLINE randomWord64 #-}
 
 -- | 'PureMT', a pure mersenne twister pseudo-random number generator
 --
-data PureMT  = PureMT !MTBlock !Int MTBlock
+data PureMT  = PureMT {-# UNPACK #-} !MTBlock {-# UNPACK #-} !Int MTBlock
 
 instance Show PureMT where
     show _ = show "<PureMT>"

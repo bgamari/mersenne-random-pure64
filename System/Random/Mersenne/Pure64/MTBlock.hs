@@ -49,6 +49,7 @@ seedBlock seed = unsafePerformIO $ do
     c_next_genrand64_block (blockAsPtr b) (blockAsPtr b)
     touch b
     return b
+{-# NOINLINE seedBlock #-}
 
 -- | step: create a new MTBlock buffer from the previous one
 nextBlock :: MTBlock -> MTBlock
@@ -58,6 +59,7 @@ nextBlock b = unsafePerformIO $ do
     touch b
     touch new
     return new
+{-# NOINLINE nextBlock #-}
 
 -- stolen from GHC.ForeignPtr - make sure the argument is still alive.
 touch :: a -> IO ()
