@@ -7,11 +7,11 @@
 -- Maintainer : Don Stewart <dons@galois.com>
 -- Stability  : experimental
 -- Portability: CPP, FFI, EmptyDataDecls
--- Tested with: GHC 6.8.2
+-- Tested with: GHC 6.8.3
 --
 -- A purely functional binding 64 bit binding to the classic mersenne
--- twister random number generator. This is more flexible than the 
--- impure 'mersenne-random' library, at the cost of being much slower.
+-- twister random number generator. This is more flexible than the
+-- impure 'mersenne-random' library, at the cost of being a bit slower.
 -- This generator is however, many times faster than System.Random,
 -- and yields high quality randoms with a long period.
 --
@@ -41,7 +41,7 @@ foreign import ccall unsafe "genrand64_real2"
     c_genrand64_real2 :: Ptr MTState -> IO CDouble
 
 sizeof_MTState :: Int
-sizeof_MTState = (#const (sizeof (struct mt_state_t))) -- 2504 bytes
+sizeof_MTState = (# const sizeof (struct mt_state_t) ) -- 2504 bytes
 
 ------------------------------------------------------------------------
 -- block based version:
@@ -60,7 +60,7 @@ blockLen = (# const NN )
 
 -- | size of an MT block, in bytes
 blockSize :: Int
-blockSize = (# const sizeof(mt_block_struct) )
+blockSize = (# const sizeof (mt_block_struct) )
 
 ------------------------------------------------------------------------
 -- model: (for testing purposes)

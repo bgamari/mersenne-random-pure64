@@ -7,11 +7,11 @@
 -- Maintainer : Don Stewart <dons@galois.com>
 -- Stability  : experimental
 -- Portability: CPP, FFI
--- Tested with: GHC 6.8.2
+-- Tested with: GHC 6.8.3
 --
 -- A purely functional binding 64 bit binding to the classic mersenne
--- twister random number generator. This is more flexible than the 
--- impure 'mersenne-random' library, at the cost of being much slower.
+-- twister random number generator. This is more flexible than the
+-- impure 'mersenne-random' library, at the cost of being a bit slower.
 -- This generator is however, many times faster than System.Random,
 -- and yields high quality randoms with a long period.
 --
@@ -79,27 +79,27 @@ instance RandomGen PureMT where
 -- generator and that 'Int'. The full 64 bits will be used on a 64 bit machine.
 randomInt :: PureMT -> (Int,PureMT)
 randomInt g = (fromIntegral i, g')
-        where (i,g') = randomWord64 g
+        where (i, g') = randomWord64 g
 {-# INLINE randomInt #-}
 
 -- | Yield a new 'Word' value from the generator, returning a new
 -- generator and that 'Word'.
 randomWord :: PureMT -> (Word,PureMT)
 randomWord g = (fromIntegral i, g')
-        where (i,g') = randomWord64 g
+        where (i, g') = randomWord64 g
 {-# INLINE randomWord #-}
 
 -- | Yield a new 'Int64' value from the generator, returning a new
 -- generator and that 'Int64'.
 randomInt64 :: PureMT -> (Int64,PureMT)
 randomInt64 g = (fromIntegral i, g')
-        where (i,g') = randomWord64 g
+        where (i, g') = randomWord64 g
 {-# INLINE randomInt64 #-}
 
 -- | Efficiently yield a new 53-bit precise 'Double' value, and a new generator.
 randomDouble :: PureMT -> (Double,PureMT)
 randomDouble g = (fromIntegral (i `div` 2048) / 9007199254740992, g')
-        where (i,g') = randomWord64 g
+        where (i, g') = randomWord64 g
 {-# INLINE randomDouble #-}
 
 -- | Yield a new 'Word64' value from the generator, returning a new

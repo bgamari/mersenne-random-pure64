@@ -1,4 +1,7 @@
-{-# OPTIONS -fbang-patterns -fglasgow-exts #-}
+{-# LANGUAGE BangPatterns #-}
+-- A basic correctness and performance test for mersenne-random-pure64.
+--
+-- Copyright (c) 2008, Don Stewart <dons@galois.com>
 
 import Control.Exception
 import Control.Monad
@@ -36,11 +39,11 @@ main = do
     ------------------------------------------------------------------------
     -- calibrate
     s <- newMVar 0 :: IO (MVar Int)
-    putStr "Callibrating ... " >> hFlush stdout
+    putStr "Calibrating ... " >> hFlush stdout
 
     tid <- forkIO $ do
         let go !i !g = do
-                let (!_,!g') = randomWord64 g
+                let (!_, !g') = randomWord64 g
                 x <- swapMVar s i
                 x `seq` go (i+1) g'
         go 0 g
@@ -48,7 +51,7 @@ main = do
     threadDelay (1000 * 1000)
     killThread tid
     lim <- readMVar s -- 1 sec worth of generation
-    putStrLn $ "done. Using N="++ show lim
+    putStrLn $ "done. Using N=" ++ show lim
 
     time $ do
         let m = 2*lim
@@ -56,7 +59,7 @@ main = do
         hFlush stdout
         equivalent g m
 
-    speed lim 
+    speed lim
 
     return ()
 
@@ -67,8 +70,8 @@ equivalent !g !n | n > 0 = do
     i'      <- c_genrand64_int64_unsafe
     d'      <- c_genrand64_real2_unsafe
 
-    let (i,g')  = randomWord64 g
-        (d,g'') = randomDouble g'
+    let (i, g')  = randomWord64 g
+        (d, g'') = randomDouble g'
 
     if i == fromIntegral i' && d == realToFrac d'
         then do when (n `rem` 500000 == 0) $ putChar '.' >> hFlush stdout
@@ -93,7 +96,7 @@ speed lim = do
         go !g !n !acc
             | n >= lim = acc
             | otherwise     =
-                    let (a,g') = Old.random g
+                    let (a, g') = Old.random g
                     in go g' (n+1) (if a > acc then a else acc)
     print (go g 0 0)
 
@@ -129,7 +132,7 @@ speed lim = do
             | otherwise     = do
                     a' <- c_genrand64_int64_unsafe
                     let a = fromIntegral a'
-                    go (n+1::Int) (if a > acc then a else acc)
+                    go (n+1) (if a > acc then a else acc)
     print =<< go 0 0
 
  time $ do
@@ -141,7 +144,7 @@ speed lim = do
             | n >= lim = return acc
             | otherwise     = do
                     a <- Unsafe.random g
-                    go (n+1::Int) (if a > acc then a else acc)
+                    go (n+1) (if a > acc then a else acc)
 
     print =<< go 0 0
 

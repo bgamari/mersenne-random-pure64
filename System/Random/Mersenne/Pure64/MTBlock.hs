@@ -6,8 +6,14 @@
 -- License    : BSD3
 -- Maintainer : Don Stewart <dons@galois.com>
 -- Stability  : experimental
--- Portability: 
--- Tested with: GHC 6.8.2
+-- Portability:
+-- Tested with: GHC 6.8.3
+--
+-- A purely functional binding 64 bit binding to the classic mersenne
+-- twister random number generator. This is more flexible than the
+-- impure 'mersenne-random' library, at the cost of being a bit slower.
+-- This generator is however, many times faster than System.Random,
+-- and yields high quality randoms with a long period.
 --
 module System.Random.Mersenne.Pure64.MTBlock (
     -- * Block type
