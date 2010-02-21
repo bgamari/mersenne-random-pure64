@@ -49,7 +49,7 @@ blockAsPtr (MTBlock b) = Ptr (byteArrayContents# b)
 
 -- | create a new MT block, seeded with the given Word64 value
 seedBlock :: Word64 -> MTBlock
-seedBlock seed = unsafePerformIO $ do
+seedBlock seed = unsafeDupablePerformIO $ do
     b <- allocateBlock
     c_seed_genrand64_block (blockAsPtr b) seed
     c_next_genrand64_block (blockAsPtr b) (blockAsPtr b)
@@ -59,7 +59,7 @@ seedBlock seed = unsafePerformIO $ do
 
 -- | step: create a new MTBlock buffer from the previous one
 nextBlock :: MTBlock -> MTBlock
-nextBlock b = unsafePerformIO $ do
+nextBlock b = unsafeDupablePerformIO $ do
     new <- allocateBlock
     c_next_genrand64_block (blockAsPtr b) (blockAsPtr new)
     touch b
