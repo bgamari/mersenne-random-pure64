@@ -1,4 +1,4 @@
-{-# LANGUAGE MagicHash, UnboxedTuples #-}
+{-# LANGUAGE MagicHash, UnboxedTuples, BangPatterns #-}
 --------------------------------------------------------------------
 -- |
 -- Module     : System.Random.Mersenne.Pure64
@@ -42,7 +42,7 @@ allocateBlock =
         (# s1, b0 #) -> case unsafeFreezeByteArray# b0 s1 of
             (# s2, b1 #) -> (# s2, MTBlock b1 #)
   where
-    I# blockSize# = blockSize
+    !(I# blockSize#) = blockSize
 
 blockAsPtr :: MTBlock -> Ptr a
 blockAsPtr (MTBlock b) = Ptr (byteArrayContents# b)
