@@ -30,7 +30,11 @@ module System.Random.Mersenne.Pure64.MTBlock (
 ) where
 
 import GHC.Exts
+#if __GLASGOW_HASKELL__ >= 706
+import GHC.IO
+#else
 import GHC.IOBase
+#endif
 import GHC.Word
 import System.Random.Mersenne.Pure64.Base
 
