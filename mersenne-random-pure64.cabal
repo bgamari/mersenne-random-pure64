@@ -24,9 +24,13 @@ license-file:    LICENSE
 copyright:       (c) 2008. Don Stewart <dons00@gmail.com>
 author:          Don Stewart
 maintainer:      Don Stewart <dons00@gmail.com>
-cabal-version:   >= 1.2.0
+cabal-version:   >= 1.6.0
 build-type:      Simple
-tested-with:     GHC == 6.8.3
+tested-with:     GHC == 7.6.2, GHC == 7.7
+
+source-repository head
+  type: git
+  location: git://github.com/bgamari/mersenne-random-pure64
 
 flag small_base
   description: Build with new smaller base library
