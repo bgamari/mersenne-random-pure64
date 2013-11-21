@@ -1,5 +1,5 @@
 name:            mersenne-random-pure64
-version:         0.2.0.3
+version:         0.2.0.4
 homepage:        http://code.haskell.org/~dons/code/mersenne-random-pure64/
 synopsis:        Generate high quality pseudorandom numbers purely using a Mersenne Twister
 description:
