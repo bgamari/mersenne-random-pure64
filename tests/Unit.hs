@@ -13,7 +13,6 @@ import System.Environment
 import System.IO
 import Text.Printf
 import qualified System.Random as Old
-import qualified System.Random.Mersenne as Unsafe
 
 import System.Random.Mersenne.Pure64
 import System.Random.Mersenne.Pure64.Base
@@ -145,20 +144,6 @@ speed lim = do
                     let a = fromIntegral a'
                     go (n+1) (if a > acc then a else acc)
     print =<< go 0 0
-
- time $ do
-    putStrLn $ "System.Random.Mersenne.Unsafe"
-    g <- Unsafe.newMTGen (Just 5)
-
-    let go :: Int -> Int -> IO Int
-        go !n !acc
-            | n >= lim = return acc
-            | otherwise     = do
-                    a <- Unsafe.random g
-                    go (n+1) (if a > acc then a else acc)
-
-    print =<< go 0 0
-
 
 --    printf "MT is %s times faster generating %s\n" (show $x`div`y) (show (typeOf ty))
 --    return ()
