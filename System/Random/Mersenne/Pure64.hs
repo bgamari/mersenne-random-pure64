@@ -1,4 +1,5 @@
 {-# LANGUAGE CPP, ForeignFunctionInterface #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 --------------------------------------------------------------------
 -- |
 -- Module     : System.Random.Mersenne.Pure64
@@ -43,6 +44,7 @@ module System.Random.Mersenne.Pure64 (
 ------------------------------------------------------------------------
 
 import System.Random.Mersenne.Pure64.MTBlock
+import System.Random.Mersenne.Pure64.Internal
 import System.Random
 import Data.Word
 import Data.Int
@@ -110,13 +112,6 @@ randomWord64 (PureMT block i nxt) = (mixWord64 (block `lookupBlock` i), mt)
     mt | i < blockLen-1 = PureMT block (i+1) nxt
        | otherwise      = mkPureMT nxt
 {-# INLINE randomWord64 #-}
-
--- | 'PureMT', a pure mersenne twister pseudo-random number generator
---
-data PureMT  = PureMT {-# UNPACK #-} !MTBlock {-# UNPACK #-} !Int MTBlock
-
-instance Show PureMT where
-    show _ = show "<PureMT>"
 
 -- create a new PureMT from an MTBlock
 mkPureMT :: MTBlock -> PureMT

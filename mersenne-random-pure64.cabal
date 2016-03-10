@@ -40,6 +40,7 @@ library
     exposed-modules: System.Random.Mersenne.Pure64
                      System.Random.Mersenne.Pure64.Base
                      System.Random.Mersenne.Pure64.MTBlock
+                     System.Random.Mersenne.Pure64.Internal
     extensions:      CPP, ForeignFunctionInterface
 
     if flag(small_base)
