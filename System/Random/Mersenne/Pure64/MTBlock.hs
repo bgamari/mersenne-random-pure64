@@ -37,8 +37,7 @@ import GHC.IOBase
 #endif
 import GHC.Word
 import System.Random.Mersenne.Pure64.Base
-
-data MTBlock = MTBlock ByteArray#
+import System.Random.Mersenne.Pure64.Internal
 
 allocateBlock :: IO MTBlock
 allocateBlock =
