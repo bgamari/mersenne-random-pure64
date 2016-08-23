@@ -46,7 +46,7 @@ library
     if flag(small_base)
         build-depends: base  < 3
     else
-        build-depends: base >= 3 && < 6, old-time, random
+        build-depends: base >= 3 && < 6, time, random
 
     cc-options:
         -O3 -finline-functions -fomit-frame-pointer

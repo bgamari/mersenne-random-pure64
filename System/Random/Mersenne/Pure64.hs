@@ -48,7 +48,8 @@ import System.Random.Mersenne.Pure64.Internal
 import System.Random
 import Data.Word
 import Data.Int
-import System.Time
+import Data.Time.Clock
+import Data.Time.Calendar
 import System.CPUTime
 
 -- | Create a PureMT generator from a 'Word64' seed.
@@ -58,9 +59,10 @@ pureMT = mkPureMT . seedBlock . fromIntegral
 -- | Create a new PureMT generator, using the clocktime as the base for the seed.
 newPureMT :: IO PureMT
 newPureMT = do
-    ct             <- getCPUTime
-    (TOD sec psec) <- getClockTime
-    return $ pureMT (fromIntegral $ sec * 1013904242 + psec + ct)
+    ct <- getCPUTime
+    t  <- getCurrentTime
+    let seed = toModifiedJulianDay (utctDay t) + diffTimeToPicoseconds (utctDayTime t) + ct
+    return $ pureMT $ fromIntegral seed
 
 ------------------------------------------------------------------------
 -- System.Random interface.
