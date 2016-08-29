@@ -56,6 +56,12 @@ import System.CPUTime
 pureMT :: Word64 -> PureMT
 pureMT = mkPureMT . seedBlock . fromIntegral
 
+#if !MIN_VERSION_time(1,6,0)
+diffTimeToPicoseconds :: DiffTime -> Integer
+diffTimeToPicoseconds d =
+    round (1000 * 1000 * 1000 * 1000 * d)
+#endif
+
 -- | Create a new PureMT generator, using the clocktime as the base for the seed.
 newPureMT :: IO PureMT
 newPureMT = do
