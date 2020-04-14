@@ -79,8 +79,13 @@ newPureMT = do
 -- RandomGen. However, it doesn't support 'split' yet.
 
 instance RandomGen PureMT where
-   next  = randomInt
+   next = randomInt
    split = error "System.Random.Mersenne.Pure: unable to split the mersenne twister"
+#if MIN_VERSION_random(1, 2, 0)
+   genWord32 g = (fromIntegral i, g')
+        where (i, g') = randomWord64 g
+   genWord64 = randomWord64
+#endif
 
 ------------------------------------------------------------------------
 -- Direct access to Int, Word and Double types
